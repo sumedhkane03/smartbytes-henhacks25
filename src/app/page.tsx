@@ -1,14 +1,16 @@
 import { Box, Button, Container, Heading, Stack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
+import './start.css';
 
 export default function Home() {
   return (
-    <Container maxW="container.xl" py={10}>
+    <div className='start'>
+    <Container maxW="container.xl" py={10} className="row">
       <Stack spacing={8} align="center" textAlign="center">
-        <Heading as="h1" size="2xl">
+        <Heading as="h1" size="2xl" className='welcome'>
           Welcome to SmartBytes
         </Heading>
-        <Text fontSize="xl">
+        <Text fontSize="xl" className='blurb'>
           Your AI-powered restaurant menu analyzer for healthier dining choices
         </Text>
         <Box>
@@ -27,5 +29,6 @@ export default function Home() {
         </Box>
       </Stack>
     </Container>
+    </div>
   );
 }
