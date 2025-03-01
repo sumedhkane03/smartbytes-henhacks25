@@ -26,25 +26,29 @@ async function searchChainRestaurantItems(query: string) {
 
 async function searchNearbyRestaurants(lat: number, lng: number) {
   try {
-    const response = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json`, {
+    const response = await axios.get(`https://api.foursquare.com/v3/places/search`, {
+      headers: {
+        'Authorization': process.env.FOURSQUARE_API_KEY || ''
+      },
       params: {
-        location: `${lat},${lng}`,
-        radius: '5000', // 5000 meters = ~3.1 miles
-        type: 'restaurant',
-        key: process.env.GOOGLE_MAPS_API_KEY,
+        ll: `${lat},${lng}`,
+        radius: 5000,
+        categories: '13065', // Restaurant category ID
+        limit: 10
       }
     });
     
-    // Return only the top 10 restaurants
-    const restaurants = response.data.results
-      .slice(0, 10)
-      .map((place: { name: any; vicinity: any; rating: any; place_id: any; geometry: { location: any; }; }) => ({
-        name: place.name,
-        address: place.vicinity,
-        rating: place.rating,
-        place_id: place.place_id,
-        location: place.geometry.location
-      }));
+    // Map Foursquare response to match existing format
+    const restaurants = response.data.results.map((place: any) => ({
+      name: place.name,
+      address: place.location.address || place.location.formatted_address,
+      rating: place.rating || null,
+      place_id: place.fsq_id,
+      location: {
+        lat: place.geocodes.main.latitude,
+        lng: place.geocodes.main.longitude
+      }
+    }));
     
     return restaurants;
   } catch (error) {
