@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Button,
@@ -112,9 +114,9 @@ export default function SignUp() {
             </Button>
           </Stack>
         </Box>
-        <Text align="center">
+        <Text align="center" style={{ margin: 0 }}>
           Already have an account?{' '}
-          <Link href="/auth/login" passHref>
+          <Link href="/auth/login" passHref legacyBehavior>
             <ChakraLink color="blue.500">Login</ChakraLink>
           </Link>
         </Text>

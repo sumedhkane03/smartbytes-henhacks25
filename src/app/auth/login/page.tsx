@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Button,
@@ -84,7 +86,7 @@ export default function Login() {
         </Box>
         <Text align="center">
           Don't have an account?{' '}
-          <Link href="/auth/signup" passHref>
+          <Link href="/auth/signup" passHref legacyBehavior>
             <ChakraLink color="blue.500">Sign up</ChakraLink>
           </Link>
         </Text>
