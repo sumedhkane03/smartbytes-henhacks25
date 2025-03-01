@@ -1,0 +1,40 @@
+.start {
+    background-image: url('./images/home-background.jpg');
+    background-color: white;
+    background-repeat: repeat;
+    background-size: 25%;
+    height: 100vh;
+    padding: 3%;
+    padding-top: 10%;
+}
+
+.row {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    margin-left: 12%;
+    margin-right: 12%;
+    display: flex;
+    background-color: rgb(245, 245, 245, 85%);
+    border-style:groove;
+    border-color: black;
+    border-radius: 3%;
+}
+
+.blurb {
+    color: black;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, cursive;
+    font-style: italic;
+    padding-top: 2%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+.welcome {
+    padding-top: 2%;
+    font-size: 60px;
+    color: rgb(0, 0, 0);
+    text-decoration: underline;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
