@@ -115,10 +115,69 @@ async function searchNearbyRestaurantsWithMenuData(lat: number, lng: number) {
   }
 }
 
-// Export the functions
+
+/**
+ * Gets menu items for a specific restaurant sorted by calories or protein
+ */
+async function getRestaurantMenuItemsSorted(restaurantName: string, sortBy: 'calories' | 'protein' = 'calories') {
+  try {
+    const menuItems = await searchChainRestaurantItems(restaurantName);
+    
+    // Sort items based on specified nutrient
+    return menuItems.sort((a: any, b: any) => {
+      const aValue = sortBy === 'calories' ? 
+        (a.nf_calories || 0) : 
+        (a.nf_protein || 0);
+      const bValue = sortBy === 'protein' ? 
+        (b.nf_calories || 0) : 
+        (b.nf_protein || 0);
+      return bValue - aValue; // Sort in descending order
+    });
+  } catch (error) {
+    console.error(`Error getting sorted menu items for ${restaurantName}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Gets detailed nutritional information for menu items
+ */
+async function getDetailedMenuItems(restaurantName: string) {
+  try {
+    const menuItems = await searchChainRestaurantItems(restaurantName);
+    
+    return menuItems.map((item: any) => ({
+      name: item.food_name,
+      brandName: item.brand_name,
+      servingSize: item.serving_qty,
+      servingUnit: item.serving_unit,
+      nutrition: {
+        calories: item.nf_calories || 0,
+        totalFat: item.nf_total_fat || 0,
+        saturatedFat: item.nf_saturated_fat || 0,
+        cholesterol: item.nf_cholesterol || 0,
+        sodium: item.nf_sodium || 0,
+        totalCarbs: item.nf_total_carbohydrate || 0,
+        dietaryFiber: item.nf_dietary_fiber || 0,
+        sugars: item.nf_sugars || 0,
+        protein: item.nf_protein || 0,
+        potassium: item.nf_potassium || 0,
+        calcium: item.nf_calcium_dv || 0,
+        iron: item.nf_iron_dv || 0
+      }
+    }));
+  } catch (error) {
+    console.error(`Error getting detailed menu items for ${restaurantName}:`, error);
+    throw error;
+  }
+}
+
+// Update exports
 export {
   searchChainRestaurantItems,
   searchNearbyRestaurants,
   searchNearbyRestaurantsWithMenuData,
-  getRestaurantMenuItems
+  getRestaurantMenuItems,
+  getRestaurantMenuItemsSorted,
+  getDetailedMenuItems
 };
