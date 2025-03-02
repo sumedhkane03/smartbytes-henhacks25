@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 const NUTRITIONIX_APP_ID = "dc0fb789"; // Free tier credentials
 const NUTRITIONIX_API_KEY = "0a27a9677acb1c0ce093977f5bdd4a84";
@@ -236,6 +237,63 @@ async function getDetailedMenuItems(restaurantName: string) {
   }
 }
 
+export type SortOption = 'calories_asc' | 'calories_desc' | 'protein_asc' | 'protein_desc' | 'protein_ratio_desc';
+
+async function getUserSortPreference(userId: string): Promise<SortOption> {
+  const db = getFirestore();
+  const userRef = doc(db, 'users', userId);
+  const userDoc = await getDoc(userRef);
+
+  if (userDoc.exists()) {
+    const userData = userDoc.data();
+    const fitnessGoal = userData.fitnessGoal;
+    const activityLevel = parseInt(userData.activityLevel) || 1;
+
+    // Determine sort preference based on fitness goal and activity level
+    switch (fitnessGoal) {
+      case 'build-muscle':
+        return activityLevel >= 2 ? 'protein_ratio_desc' : 'protein_desc';
+      case 'lose-weight':
+        return 'calories_asc';
+      case 'maintain':
+        return activityLevel >= 2 ? 'protein_desc' : 'calories_asc';
+      default:
+        return userData.sortPreference as SortOption || 'calories_asc';
+    }
+  }
+
+  return 'calories_asc'; // Default sort option
+}
+
+async function displayMenuSortedByPreference(restaurantName: string, userId: string) {
+  try {
+    const menuItems = await searchChainRestaurantItems(restaurantName);
+    const userSortPreference = await getUserSortPreference(userId);
+
+    return menuItems.sort((a: any, b: any) => {
+      switch (userSortPreference) {
+        case 'calories_asc':
+          return (a.nf_calories || 0) - (b.nf_calories || 0);
+        case 'calories_desc':
+          return (b.nf_calories || 0) - (a.nf_calories || 0);
+        case 'protein_asc':
+          return (a.nf_protein || 0) - (b.nf_protein || 0);
+        case 'protein_desc':
+          return (b.nf_protein || 0) - (a.nf_protein || 0);
+        case 'protein_ratio_desc':
+          const aRatio = (a.nf_protein || 0) / (a.nf_calories || 1);
+          const bRatio = (b.nf_protein || 0) / (b.nf_calories || 1);
+          return bRatio - aRatio;
+        default:
+          return (a.nf_calories || 0) - (b.nf_calories || 0);
+      }
+    });
+  } catch (error) {
+    console.error(`Error getting sorted menu items for ${restaurantName}:`, error);
+    throw error;
+  }
+}
+
 // Update exports
 export {
   searchChainRestaurantItems,
@@ -244,4 +302,5 @@ export {
   getRestaurantMenuItems,
   getRestaurantMenuItemsSorted,
   getDetailedMenuItems,
+  displayMenuSortedByPreference
 };
