@@ -65,18 +65,26 @@ export default function RestaurantMenu() {
   }, [restaurantName]);
 
   // Function to get appropriate image based on item name (simple matching)
-  const getItemImage = (itemName: string) => {
-    const lowerName = itemName.toLowerCase();
-    if (lowerName.includes("burger") || lowerName.includes("sandwich")) {
+  const getItemImage = (itemName: string, restaurant: string) => {
+    const formattedRestaurant = restaurant// Normalize name
+    const formattedItem = itemName // Normalize item name
+  
+    if (formattedRestaurant === "Chick-fil-A" || formattedRestaurant === "Wawa") {
+      return `/images/${formattedRestaurant}/${formattedItem}.png`; // ✅ Uses restaurant-specific image
+    }
+  
+    // Default fallback logic
+    if (formattedItem.includes("burger") || formattedItem.includes("sandwich")) {
       return burgerImage;
-    } else if (lowerName.includes("chicken") || lowerName.includes("nugget")) {
+    } else if (formattedItem.includes("chicken") || formattedItem.includes("nugget")) {
       return chickenImage;
-    } else if (lowerName.includes("fries") || lowerName.includes("potato")) {
+    } else if (formattedItem.includes("fries") || formattedItem.includes("potato")) {
       return friesImage;
     }
-    // Default image
-    return burgerImage;
+  
+    return burgerImage; // Default fallback image
   };
+  
 
   return (
     <div className="menu-container">
@@ -97,7 +105,7 @@ export default function RestaurantMenu() {
               key={index}
               name={item.name}
               calories={`${Math.round(item.nutrition.calories)} cal`}
-              image={getItemImage(item.name)}
+              image={getItemImage(item.name,restaurantName)}
             />
           ))
         )}
