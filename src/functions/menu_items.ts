@@ -1,6 +1,5 @@
 import axios from "axios";
-import dotenv from "dotenv";
-dotenv.config();
+
 const NUTRITIONIX_APP_ID = "dc0fb789"; // Free tier credentials
 const NUTRITIONIX_API_KEY = "0a27a9677acb1c0ce093977f5bdd4a84";
 const FOURSQUARE_API_KEY = "fsq36whsfdO2LDesKgMq6CkdtynVq+mQpAQRFBcTohxkoQ4=";
