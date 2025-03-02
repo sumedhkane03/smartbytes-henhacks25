@@ -6,10 +6,6 @@ import Card from "../../components/card";
 import { searchNearbyRestaurants } from "@/src/functions/menu_items";
 import "./page.css";
 
-// We'll continue to use the default images for now
-import mcdBanner from "@/public/images/mcdonalds-banner.jpeg";
-import mcdLogo from "@/public/images/mcdonalds-logo.png";
-
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("list");
@@ -34,8 +30,6 @@ export default function DashboardPage() {
             async (position) => {
               const { latitude, longitude } = position.coords;
               restaurantsData = await searchNearbyRestaurants(
-                // defaultLat,
-                // defaultLng,
                 latitude,
                 longitude,
                 searchRadius,
@@ -163,24 +157,30 @@ export default function DashboardPage() {
             No restaurants found. Try a different search.
           </div>
         ) : (
-          // Create a card for each restaurant returned (limit is set by API)
-          filteredRestaurants.map((restaurant) => (
-            <div
-              key={restaurant.place_id}
-              onClick={() => handleCardClick(restaurant)}
-              className="card-link"
-            >
-              <Card
-                backgroundImage={
-                  restaurant.photo
-                    ? restaurant.photo
-                    : "https://placehold.co/600x150"
-                }
-                logoImage={"https://placehold.co/64"}
-                text={restaurant.name}
-              />
-            </div>
-          ))
+          filteredRestaurants.map((restaurant) => {
+            const formattedName = restaurant.name
+            .replace(/\./g, ""); 
+            const logoPath = `/images/logos/${formattedName}.png`;
+            const fallbackLogo = "/images/logos/Default.png"; 
+
+            return (
+              <div
+                key={restaurant.place_id}
+                onClick={() => handleCardClick(restaurant)}
+                className="card-link"
+              >
+                <Card
+                  backgroundImage={
+                    restaurant.photo
+                      ? restaurant.photo
+                      : "https://placehold.co/600x150"
+                  }
+                  logoImage={logoPath} // ✅ Dynamically set the logo
+                  text={restaurant.name}
+                />
+              </div>
+            );
+          })
         )}
       </div>
     </div>
