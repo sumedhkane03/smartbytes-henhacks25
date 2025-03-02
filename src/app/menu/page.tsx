@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import MenuItem from "@/src/components/MenuItem";
 import { getDetailedMenuItems } from "@/src/functions/menu_items";
 import "./page.css";
+import BottomNav from "@/src/components/BottomNav";
 
 // Default images for fallback
 import burgerImage from "@/public/images/burger.png";
@@ -36,7 +37,7 @@ export default function RestaurantMenu() {
   const searchParams = useSearchParams();
   const restaurantName = searchParams.get("name") || "";
   const restaurantId = searchParams.get("id") || "";
-  
+
   const [menuItems, setMenuItems] = useState<MenuItemType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -66,29 +67,42 @@ export default function RestaurantMenu() {
 
   // Function to get appropriate image based on item name (simple matching)
   const getItemImage = (itemName: string, restaurant: string) => {
-    const formattedRestaurant = restaurant// Normalize name
-    const formattedItem = itemName // Normalize item name
-  
-    if (formattedRestaurant === "Chick-fil-A" || formattedRestaurant === "Wawa") {
+    const formattedRestaurant = restaurant; // Normalize name
+    const formattedItem = itemName; // Normalize item name
+
+    if (
+      formattedRestaurant === "Chick-fil-A" ||
+      formattedRestaurant === "Wawa"
+    ) {
       return `/images/${formattedRestaurant}/${formattedItem}.png`; // ✅ Uses restaurant-specific image
     }
-  
+
     // Default fallback logic
-    if (formattedItem.includes("burger") || formattedItem.includes("sandwich")) {
+    if (
+      formattedItem.includes("burger") ||
+      formattedItem.includes("sandwich")
+    ) {
       return burgerImage;
-    } else if (formattedItem.includes("chicken") || formattedItem.includes("nugget")) {
+    } else if (
+      formattedItem.includes("chicken") ||
+      formattedItem.includes("nugget")
+    ) {
       return chickenImage;
-    } else if (formattedItem.includes("fries") || formattedItem.includes("potato")) {
+    } else if (
+      formattedItem.includes("fries") ||
+      formattedItem.includes("potato")
+    ) {
       return friesImage;
     }
-  
+
     return burgerImage; // Default fallback image
   };
-  
 
   return (
     <div className="menu-container">
-      <header className="menu-header">{decodeURIComponent(restaurantName)}</header>
+      <header className="menu-header">
+        {decodeURIComponent(restaurantName)}
+      </header>
 
       <section className="recommended-section">
         <h2 className="recommended-title">Menu Items</h2>
@@ -98,16 +112,20 @@ export default function RestaurantMenu() {
         ) : error ? (
           <div className="error">{error}</div>
         ) : menuItems.length === 0 ? (
-          <div className="no-items">No menu items found for this restaurant.</div>
+          <div className="no-items">
+            No menu items found for this restaurant.
+          </div>
         ) : (
-          menuItems.slice(0, 10).map((item, index) => (
-            <MenuItem
-              key={index}
-              name={item.name}
-              calories={`${Math.round(item.nutrition.calories)} cal`}
-              image={getItemImage(item.name,restaurantName)}
-            />
-          ))
+          menuItems
+            .slice(0, 10)
+            .map((item, index) => (
+              <MenuItem
+                key={index}
+                name={item.name}
+                calories={`${Math.round(item.nutrition.calories)} cal`}
+                image={getItemImage(item.name, restaurantName)}
+              />
+            ))
         )}
       </section>
 
@@ -116,6 +134,9 @@ export default function RestaurantMenu() {
         <span>Sort by</span>
         <span className="arrow">→</span>
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 }

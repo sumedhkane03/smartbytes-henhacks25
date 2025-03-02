@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FaCheckCircle, FaArrowLeft } from "react-icons/fa";
 import doordashLogo from "@/public/images/doordash-logo.png";
+import BottomNav from "@/src/components/BottomNav";
 import "./page.css";
 
 export default function OrderPage() {
@@ -110,6 +111,8 @@ export default function OrderPage() {
           )}
         </div>
       </div>
+      {/* Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 }
