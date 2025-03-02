@@ -6,9 +6,9 @@ import Card from "../../components/card";
 import { searchNearbyRestaurants } from "@/src/functions/menu_items";
 import "./page.css";
 
-// We'll continue to use the default images for now
-import mcdBanner from "@/public/images/mcdonalds-banner.jpeg";
-import mcdLogo from "@/public/images/mcdonalds-logo.png";
+// Default location (fallback)
+const defaultLat = 38.984783;
+const defaultLng = -77.113892;
 
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,11 +16,11 @@ export default function DashboardPage() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [userLocation, setUserLocation] = useState({
+    lat: defaultLat,
+    lng: defaultLng,
+  });
   const router = useRouter();
-
-  // Default location (fallback)
-  const defaultLat = 38.984783;
-  const defaultLng = -77.113892;
 
   useEffect(() => {
     async function fetchNearbyRestaurants() {
@@ -33,9 +33,8 @@ export default function DashboardPage() {
           navigator.geolocation.getCurrentPosition(
             async (position) => {
               const { latitude, longitude } = position.coords;
+              setUserLocation({ lat: latitude, lng: longitude });
               restaurantsData = await searchNearbyRestaurants(
-                // defaultLat,
-                // defaultLng,
                 latitude,
                 longitude,
                 searchRadius,
@@ -46,6 +45,7 @@ export default function DashboardPage() {
             },
             async (error) => {
               console.error("Geolocation error:", error);
+              setUserLocation({ lat: defaultLat, lng: defaultLng });
               restaurantsData = await searchNearbyRestaurants(
                 defaultLat,
                 defaultLng,
@@ -75,12 +75,28 @@ export default function DashboardPage() {
     fetchNearbyRestaurants();
   }, []);
 
+  // New useEffect: compute, print, and pass the coordinates array when restaurants change
+  useEffect(() => {
+    if (restaurants.length > 0) {
+      const coordinates = restaurants.map((r) => [
+        r.lat || (r.location && r.location.lat),
+        r.lng || (r.location && r.location.lng),
+      ]);
+      // console.log("Coordinates 2D array:", coordinates);
+      // Pass the 2D array to the map page by storing it in localStorage
+      localStorage.setItem("coordinatesArray", JSON.stringify(coordinates));
+    }
+  }, [restaurants]);
+
   interface Restaurant {
     place_id: string;
     name: string;
     address?: string;
     logo?: string;
     photo?: string;
+    lat?: number;
+    lng?: number;
+    location?: { lat: number; lng: number };
   }
 
   const handleCardClick = (restaurant: Restaurant) => {
@@ -146,7 +162,10 @@ export default function DashboardPage() {
             fontSize: "16px",
             cursor: "pointer",
           }}
-          onClick={() => setActiveTab("map")}
+          onClick={() => {
+            setActiveTab("map");
+            router.push(`/map?lat=${userLocation.lat}&lng=${userLocation.lng}`);
+          }}
         >
           Map
         </button>
