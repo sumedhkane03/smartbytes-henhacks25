@@ -80,6 +80,7 @@ export default function DashboardPage() {
     name: string;
     address?: string;
     logo?: string;
+    photo?: string;
   }
 
   const handleCardClick = (restaurant: Restaurant) => {
