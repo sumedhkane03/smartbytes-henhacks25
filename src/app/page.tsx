@@ -18,7 +18,7 @@ export default function WelcomeScreen() {
 
         {/* Buttons */}
         <div className="buttons-container">
-          <a href="/signup" className="signup-button">
+          <a href="/auth/signup" className="signup-button">
             Sign Up
           </a>
 
@@ -26,7 +26,7 @@ export default function WelcomeScreen() {
             <p>Already have an account?</p>
           </div>
 
-          <a href="/login" className="login-button">
+          <a href="/auth/login" className="login-button">
             Log In
           </a>
         </div>
