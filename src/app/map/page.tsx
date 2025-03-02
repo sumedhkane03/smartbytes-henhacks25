@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import "./page.css";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import BottomNav from "@/src/components/BottomNav";
 
 // Marker interface for better type safety
 interface MarkerLocation {
@@ -188,6 +189,9 @@ export default function SimpleSearchPage() {
 
       {/* Map Container */}
       <div id="map" className="map-container"></div>
+
+      {/* Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 }

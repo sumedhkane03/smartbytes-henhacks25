@@ -6,6 +6,7 @@ import Card from "../../components/card";
 import { searchNearbyRestaurants } from "@/src/functions/menu_items";
 import "./page.css";
 import defaultImage from "@/public/images/Default.png";
+import BottomNav from "@/src/components/BottomNav";
 
 // Default location (fallback)
 const defaultLat = 38.984783;
@@ -183,12 +184,10 @@ export default function DashboardPage() {
             No restaurants found. Try a different search.
           </div>
         ) : (
-
           filteredRestaurants.map((restaurant) => {
-            const formattedName = restaurant.name
-            .replace(/\./g, ""); 
+            const formattedName = restaurant.name.replace(/\./g, "");
             const logoPath = `/images/logos/${formattedName}.png`;
-            const fallbackLogo = "/images/logos/Default.png"; 
+            const fallbackLogo = "/images/logos/Default.png";
 
             return (
               <div
@@ -198,9 +197,7 @@ export default function DashboardPage() {
               >
                 <Card
                   backgroundImage={
-                    restaurant.photo
-                      ? restaurant.photo
-                      : defaultImage
+                    restaurant.photo ? restaurant.photo : defaultImage
                   }
                   logoImage={logoPath} // ✅ Dynamically set the logo
                   text={restaurant.name}
@@ -208,9 +205,11 @@ export default function DashboardPage() {
               </div>
             );
           })
-
         )}
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 }

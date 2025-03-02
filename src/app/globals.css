@@ -102,4 +102,11 @@
   color: #00c851;
 }
 
+/* Add padding to main containers to account for bottom navigation */
+.page-container,
+.menu-container,
+.order-page {
+  padding-bottom: 64px; /* Same as bottom-nav height */
+}
+
 /* ...existing styles... */

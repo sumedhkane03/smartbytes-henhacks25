@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import MenuItem from "@/src/components/MenuItem";
 import { getDetailedMenuItems } from "@/src/functions/menu_items";
 import "./page.css";
+import BottomNav from "@/src/components/BottomNav";
 
 // Default images for fallback
 import burgerImage from "@/public/images/burger.png";
@@ -139,6 +140,9 @@ export default function RestaurantMenu() {
         <span>Sort by</span>
         <span className="arrow">→</span>
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 }
