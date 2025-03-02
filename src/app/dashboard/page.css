@@ -1,5 +1,5 @@
 .page-container {
-  min-height: 100vh;
+  /* min-height: 100vh; */
   background-color: #eaf4f4;
   padding: 16px;
   display: flex;
@@ -56,4 +56,16 @@
 .toggle-button.active {
   background-color: #6b9080;
   color: #fff;
+}
+
+.cards-container {
+  margin-top: 16px; /* Reduced top margin */
+  width: calc(100% - 32px);
+  max-height: calc(100vh - 200px); /* Adjust as needed */
+  overflow-y: scroll;
+  padding-right: 8px; /* to avoid scrollbar overlay */
+  scrollbar-width: none; /* For Firefox */
+}
+.cards-container::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
 }
