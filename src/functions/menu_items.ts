@@ -1,7 +1,8 @@
 import axios from "axios";
 
-const NUTRITIONIX_APP_ID = process.env.NUTRITIONIX_APP_ID; // Free tier credentials
-const NUTRITIONIX_API_KEY = process.env.NUTRITIONIX_API_KEY;
+const NUTRITIONIX_APP_ID = "dc0fb789"; // Free tier credentials
+const NUTRITIONIX_API_KEY = "0a27a9677acb1c0ce093977f5bdd4a84";
+const FOURSQUARE_API_KEY = "fsq36whsfdO2LDesKgMq6CkdtynVq+mQpAQRFBcTohxkoQ4=";
 
 async function searchChainRestaurantItems(query: string) {
   try {
@@ -25,19 +26,51 @@ async function searchChainRestaurantItems(query: string) {
     throw error;
   }
 }
+/**
+ * Fetches photos for a restaurant using its Foursquare ID
+ */
+async function getRestaurantPhotos(fsq_id: string) {
+  try {
+    const response = await axios.get(
+      `https://api.foursquare.com/v3/places/${fsq_id}/photos`,
+      {
+        headers: {
+          Authorization: FOURSQUARE_API_KEY || "",
+          accept: "application/json",
+        },
+        params: {
+          limit: 1,
+          sort: "popular",
+          classifications: "outdoor",
+        },
+      }
+    );
+
+    if (response.data && response.data.length > 0) {
+      const photo = response.data[0];
+      // Construct the photo URL according to Foursquare format
+      const photoUrl = `${photo.prefix}original${photo.suffix}`;
+      return photoUrl;
+    }
+    return null;
+  } catch (error) {
+    console.error(`Error fetching photos for restaurant ${fsq_id}:`, error);
+    return null;
+  }
+}
 
 async function searchNearbyRestaurants(
   lat: number,
   lng: number,
   radius: number = 16093,
-  limit: number = 15
+  limit: number = 25
 ) {
   try {
     const response = await axios.get(
       `https://api.foursquare.com/v3/places/search`,
       {
         headers: {
-          Authorization: process.env.FOURSQUARE_API_KEY || "",
+          Authorization: FOURSQUARE_API_KEY || "",
         },
         params: {
           ll: `${lat},${lng}`,
@@ -60,7 +93,23 @@ async function searchNearbyRestaurants(
       },
     }));
 
-    return restaurants;
+    // Fetch photos for each restaurant
+    const restaurantsWithPhotos = await Promise.all(
+      restaurants.map(async (restaurant: any) => {
+        try {
+          const photoUrl = await getRestaurantPhotos(restaurant.place_id);
+          return {
+            ...restaurant,
+            photo: photoUrl, // Add the photo URL to the restaurant object
+          };
+        } catch (error) {
+          console.error(`Error getting photo for ${restaurant.name}:`, error);
+          return restaurant; // Return restaurant without photo on error
+        }
+      })
+    );
+
+    return restaurantsWithPhotos;
   } catch (error) {
     console.error("Error searching nearby restaurants:", error);
     throw error;

@@ -16,6 +16,7 @@
     "@types/react": "^18.2.56",
     "@types/react-dom": "^18.2.19",
     "axios": "^1.8.1",
+    "dotenv": "^16.4.7",
     "firebase": "^11.4.0",
     "framer-motion": "^11.0.5",
     "next": "14.1.0",
@@ -31,5 +32,6 @@
     "eslint": "^8.56.0",
     "eslint-config-next": "14.1.0",
     "prettier": "^3.2.5"
-  }
+  },
+  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0"
 }
