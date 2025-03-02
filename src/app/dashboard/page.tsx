@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { Input } from "@chakra-ui/input";
+import { Input } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import Card from "../../components/card"; // adjust path if necessary
 import "./page.css";
 
 // Import local images from /src/app/images
-import mcdBanner from "../images/mcdonalds-banner.jpeg";
-import mcdLogo from "../images/mcdonalds-logo.png";
+import mcdBanner from "@/public/images/mcdonalds-banner.jpeg";
+import mcdLogo from "@/public/images/mcdonalds-logo.png";
 
 export default function SimpleSearchPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,7 +23,7 @@ export default function SimpleSearchPage() {
             variant="unstyled"
             placeholder="Enter a restaurant..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            // onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
           />
         </div>
