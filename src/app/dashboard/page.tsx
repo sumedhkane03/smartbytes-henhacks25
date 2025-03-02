@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Card from "../../components/card";
 import { searchNearbyRestaurants } from "@/src/functions/menu_items";
 import "./page.css";
+import defaultImage from "@/public/images/Default.png";
 
 // Default location (fallback)
 const defaultLat = 38.984783;
@@ -182,24 +183,32 @@ export default function DashboardPage() {
             No restaurants found. Try a different search.
           </div>
         ) : (
-          // Create a card for each restaurant returned (limit is set by API)
-          filteredRestaurants.map((restaurant) => (
-            <div
-              key={restaurant.place_id}
-              onClick={() => handleCardClick(restaurant)}
-              className="card-link"
-            >
-              <Card
-                backgroundImage={
-                  restaurant.photo
-                    ? restaurant.photo
-                    : "https://placehold.co/600x150"
-                }
-                logoImage={"https://placehold.co/64"}
-                text={restaurant.name}
-              />
-            </div>
-          ))
+
+          filteredRestaurants.map((restaurant) => {
+            const formattedName = restaurant.name
+            .replace(/\./g, ""); 
+            const logoPath = `/images/logos/${formattedName}.png`;
+            const fallbackLogo = "/images/logos/Default.png"; 
+
+            return (
+              <div
+                key={restaurant.place_id}
+                onClick={() => handleCardClick(restaurant)}
+                className="card-link"
+              >
+                <Card
+                  backgroundImage={
+                    restaurant.photo
+                      ? restaurant.photo
+                      : defaultImage
+                  }
+                  logoImage={logoPath} // ✅ Dynamically set the logo
+                  text={restaurant.name}
+                />
+              </div>
+            );
+          })
+
         )}
       </div>
     </div>
