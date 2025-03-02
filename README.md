@@ -11,6 +11,11 @@ SmartByte also utilizes your proximity to nearby restaurants, so you can select 
 to order from that are near you. Once a restaurant is selected, the best menu items for you
 are displayed.
 
+To Run:
+In the console, type "npm install"
+Then, "npm run dev"
+Finally, click the local host link.
+
 Contributers:
 Sumedh Kane - sumedhk1@umbc.edu
 Danylo Kachur - dkachur@umd.edu
