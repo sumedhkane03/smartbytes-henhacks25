@@ -1,34 +1,36 @@
-import { Box, Button, Container, Heading, Stack, Text } from '@chakra-ui/react';
-import Link from 'next/link';
-import './start.css';
+import "./start.css"; // ✅ Ensure CSS is imported
 
-export default function Home() {
+export default function WelcomeScreen() {
   return (
-    <div className='start'>
-    <Container maxW="container.xl" py={10} className="row">
-      <Stack spacing={8} align="center" textAlign="center">
-        <Heading as="h1" size="2xl" className='welcome'>
-          Welcome to SmartBytes
-        </Heading>
-        <Text fontSize="xl" className='blurb'>
-          Your AI-powered restaurant menu analyzer for healthier dining choices
-        </Text>
-        <Box>
-          <Stack direction={['column', 'row']} spacing={4}>
-            <Link href="/auth/login" passHref>
-              <Button colorScheme="blue" size="lg">
-                Login
-              </Button>
-            </Link>
-            <Link href="/auth/signup" passHref>
-              <Button colorScheme="green" size="lg">
-                Sign Up
-              </Button>
-            </Link>
-          </Stack>
-        </Box>
-      </Stack>
-    </Container>
+    <div className="welcome-screen">
+      {/* Background container (image now set in CSS) */}
+      <div className="background-container"></div>
+
+      {/* Content container */}
+      <div className="content-container">
+        {/* Logo and tagline */}
+        <div className="logo-container">
+          <h1 className="logo">SmartByte</h1>
+          <h2 className="tagline">
+            Enjoy the restaurants you love guilt free!
+          </h2>
+        </div>
+
+        {/* Buttons */}
+        <div className="buttons-container">
+          <a href="/signup" className="signup-button">
+            Sign Up
+          </a>
+
+          <div className="account-text">
+            <p>Already have an account?</p>
+          </div>
+
+          <a href="/login" className="login-button">
+            Log In
+          </a>
+        </div>
+      </div>
     </div>
   );
 }
