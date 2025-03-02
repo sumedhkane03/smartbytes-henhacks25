@@ -25,8 +25,8 @@ export default function SimpleSearchPage() {
   // Parse latitude and longitude from query params
   const latParam = searchParams.get("lat");
   const lngParam = searchParams.get("lng");
-  const centerLat = latParam ? parseFloat(latParam) : 40;
-  const centerLng = lngParam ? parseFloat(lngParam) : -74.5;
+  const centerLat = latParam ? parseFloat(latParam) : 39.680621;
+  const centerLng = lngParam ? parseFloat(lngParam) : -75.753038;
 
   // Store map instance in a ref for persistence across renders
   const mapRef = useRef<mapboxgl.Map | null>(null);

@@ -1,4 +1,3 @@
-
 SmartByte aims to improve people's restaurant consuming methods. Consumers need to consider
 many factors when choosing the best menu item from a place, however, SmartByte solves this
 issue by choosing the best menu items for them.
