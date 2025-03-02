@@ -64,7 +64,7 @@ async function searchNearbyRestaurants(
   lat: number,
   lng: number,
   radius: number = 16093,
-  limit: number = 15
+  limit: number = 25
 ) {
   try {
     const response = await axios.get(
