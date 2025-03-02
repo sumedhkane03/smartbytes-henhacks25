@@ -53,7 +53,13 @@ export default function RestaurantMenu() {
       try {
         setLoading(true);
         const items = await getDetailedMenuItems(restaurantName);
-        setMenuItems(items);
+
+        // Filter out items with "sauce" in their name
+        const filteredItems: MenuItemType[] = items.filter(
+          (item: MenuItemType) => !item.name.toLowerCase().includes("sauce")
+        );
+
+        setMenuItems(filteredItems);
         setLoading(false);
       } catch (err) {
         console.error("Failed to fetch menu items:", err);
