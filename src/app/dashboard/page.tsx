@@ -39,13 +39,12 @@ export default function SimpleSearchPage() {
       >
         <button
           style={{
-            flex: 1,
+            width: "150px", // fixed width of 100px
             padding: "12px",
             textAlign: "center",
             fontWeight: activeTab === "list" ? "bold" : "normal",
             borderBottom: activeTab === "list" ? "3px solid black" : "none",
             background: "none",
-            border: "none",
             fontSize: "16px",
             cursor: "pointer",
           }}
@@ -55,13 +54,12 @@ export default function SimpleSearchPage() {
         </button>
         <button
           style={{
-            flex: 1,
+            width: "150px", // fixed width of 100px
             padding: "12px",
             textAlign: "center",
             fontWeight: activeTab === "map" ? "bold" : "normal",
             borderBottom: activeTab === "map" ? "3px solid black" : "none",
             background: "none",
-            border: "none",
             fontSize: "16px",
             cursor: "pointer",
           }}
