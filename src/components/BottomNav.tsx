@@ -1,6 +1,6 @@
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { FaUtensils, FaList, FaShoppingCart } from "react-icons/fa";
+import { FaUtensils, FaList, FaShoppingCart, FaUser } from "react-icons/fa";
 import "./BottomNav.css";
 
 export default function BottomNav() {
@@ -41,6 +41,15 @@ export default function BottomNav() {
         aria-label="Order"
       >
         <FaShoppingCart className="bottom-nav-icon" />
+      </button>
+      
+      {/* New Profile/Account Tab */}
+      <button
+        className={`bottom-nav-item ${isActive("/onboarding") ? "active" : ""}`}
+        onClick={() => router.push("/onboarding")}
+        aria-label="Profile"
+      >
+        <FaUser className="bottom-nav-icon" />
       </button>
     </div>
   );
