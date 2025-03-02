@@ -1,0 +1,181 @@
+/* filepath: /Users/sumedh/Desktop/smartbytes-henhacks25/src/components/sorted-menu.css */
+
+.sorted-menu-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.sorted-menu-container h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.menu-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.sort-section {
+  flex: 1;
+  min-width: 200px;
+}
+
+.sort-section select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: white;
+}
+
+.filter-section {
+  flex: 2;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filter-section h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-item label {
+  min-width: 150px;
+}
+
+.filter-item input[type="number"] {
+  width: 100px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.reset-filters {
+  background-color: #e7e7e7;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-top: 10px;
+}
+
+.reset-filters:hover {
+  background-color: #d7d7d7;
+}
+
+.menu-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.loading, .error-message, .no-items {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.2rem;
+}
+
+.error-message {
+  color: #dc3545;
+}
+
+.confidence-legend {
+  margin-top: 30px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.confidence-legend h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.legend-item .indicator {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}
+
+/* Enhance the MenuItem component styling */
+.menu-item {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  position: relative;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.like-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-name {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.nutrition-info {
+  margin-bottom: 15px;
+}
+
+.item-calories, .item-protein, .protein-ratio {
+  margin: 5px 0;
+  color: #555;
+}
+
+.confidence-indicator {
+  cursor: help;
+}
+
+.button-row {
+  margin-top: 15px;
+}
+
+.buy-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.buy-button:hover {
+  background-color: #45a049;
+}
