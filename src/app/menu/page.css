@@ -1,0 +1,133 @@
+.menu-container {
+  font-family: Arial, sans-serif;
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.menu-header {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.recommended-section {
+  margin-bottom: 30px;
+}
+
+.recommended-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #f7f7f7;
+  position: relative; /* Ensure child absolute elements are positioned relative to menu-item */
+}
+
+.like-icon {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 0px;
+}
+
+.item-calories {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.buy-button {
+  background-color: #6b8f80;
+  border: none;
+  border-radius: 20px;
+  padding: 0px 16px;
+  font-size: 14px;
+  height: 30px;
+  width: 60px;
+  color: white;
+  cursor: pointer;
+}
+
+.like-button {
+  background-color: #ddd;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.item-image {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.sort-by {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #333;
+}
+
+.arrow {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  padding: 10px 0;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 14px;
+  color: #666;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.active-nav-item {
+  color: #000;
+  font-weight: bold;
+}
