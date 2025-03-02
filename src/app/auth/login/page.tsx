@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "@/src/lib/firebase";
 import Link from "next/link";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -38,8 +39,21 @@ export default function Login() {
         duration: 5000,
         isClosable: true,
       });
-    } else {
-      router.push("/onboarding");
+    } else if (user?.email) {
+      try {
+        const db = getFirestore();
+        const userDocRef = doc(db, 'users', user.email);
+        const userDocSnap = await getDoc(userDocRef);
+        
+        if (userDocSnap.exists()) {
+          router.push('/dashboard');
+        } else {
+          router.push('/onboarding');
+        }
+      } catch (err) {
+        console.error('Error checking user data:', err);
+        router.push('/onboarding');
+      }
     }
 
     setIsLoading(false);
