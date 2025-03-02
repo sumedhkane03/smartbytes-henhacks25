@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import { Input } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
@@ -12,6 +11,7 @@ import mcdLogo from "@/public/images/mcdonalds-logo.png";
 
 export default function SimpleSearchPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("list");
   const router = useRouter();
 
   return (
@@ -23,27 +23,51 @@ export default function SimpleSearchPage() {
             variant="unstyled"
             placeholder="Enter a restaurant..."
             value={searchQuery}
-            // onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
           />
         </div>
       </div>
 
-      {/* Toggle Container */}
-      <div className="toggle-container">
+      {/* Tab Navigation */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          borderBottom: "1px solid #ddd",
+        }}
+      >
         <button
-          className="toggle-button active"
-          onClick={() => router.push("/dashboard")}
-          style={{ color: "white" }}
+          style={{
+            flex: 1,
+            padding: "12px",
+            textAlign: "center",
+            fontWeight: activeTab === "list" ? "bold" : "normal",
+            borderBottom: activeTab === "list" ? "3px solid black" : "none",
+            background: "none",
+            border: "none",
+            fontSize: "16px",
+            cursor: "pointer",
+          }}
+          onClick={() => setActiveTab("list")}
         >
-          List View
+          List
         </button>
         <button
-          className="toggle-button"
-          onClick={() => router.push("/map")}
-          style={{ color: "black" }}
+          style={{
+            flex: 1,
+            padding: "12px",
+            textAlign: "center",
+            fontWeight: activeTab === "map" ? "bold" : "normal",
+            borderBottom: activeTab === "map" ? "3px solid black" : "none",
+            background: "none",
+            border: "none",
+            fontSize: "16px",
+            cursor: "pointer",
+          }}
+          onClick={() => setActiveTab("map")}
         >
-          Map View
+          Map
         </button>
       </div>
 

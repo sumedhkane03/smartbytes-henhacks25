@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Box,
   Button,
@@ -11,16 +10,16 @@ import {
   Stack,
   Text,
   Link as ChakraLink,
-  useToast
-} from '@chakra-ui/react';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { signIn } from '@/lib/firebase';
-import Link from 'next/link';
+  useToast,
+} from "@chakra-ui/react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "@/src/lib/firebase";
+import Link from "next/link";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const toast = useToast();
@@ -33,14 +32,14 @@ export default function Login() {
 
     if (error) {
       toast({
-        title: 'Error',
+        title: "Error",
         description: error,
-        status: 'error',
+        status: "error",
         duration: 5000,
-        isClosable: true
+        isClosable: true,
       });
     } else {
-      router.push('/onboarding');
+      router.push("/onboarding");
     }
 
     setIsLoading(false);
@@ -57,8 +56,8 @@ export default function Login() {
           <Stack spacing={4} as="form" onSubmit={handleSubmit}>
             <FormControl id="email">
               <FormLabel>Email address</FormLabel>
-              <Input 
-                type="email" 
+              <Input
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -66,17 +65,17 @@ export default function Login() {
             </FormControl>
             <FormControl id="password">
               <FormLabel>Password</FormLabel>
-              <Input 
-                type="password" 
+              <Input
+                type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </FormControl>
-            <Button 
+            <Button
               type="submit"
-              colorScheme="blue" 
-              size="lg" 
+              colorScheme="blue"
+              size="lg"
               fontSize="md"
               isLoading={isLoading}
             >
@@ -85,7 +84,7 @@ export default function Login() {
           </Stack>
         </Box>
         <Text align="center">
-          Don't have an account?{' '}
+          Don't have an account?{" "}
           <Link href="/auth/signup" passHref legacyBehavior>
             <ChakraLink color="blue.500">Sign up</ChakraLink>
           </Link>
