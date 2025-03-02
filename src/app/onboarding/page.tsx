@@ -32,6 +32,7 @@ import Image from "next/image";
 export default function OnboardingPage() {
   interface FormData {
     gender: string;
+    age: string;
     height: string;
     weight: string;
     fitnessGoal: string;
@@ -40,6 +41,7 @@ export default function OnboardingPage() {
 
   const [formData, setFormData] = useState<FormData>({
     gender: "male",
+    age: "",
     height: "",
     weight: "",
     fitnessGoal: "",
@@ -146,6 +148,21 @@ export default function OnboardingPage() {
                     </Tab>
                   </TabList>
                 </Tabs>
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Age</FormLabel>
+                <NumberInput
+                  min={13}
+                  max={120}
+                  value={formData.age}
+                  onChange={(value) => handleInputChange("age", value)}
+                >
+                  <NumberInputField placeholder="Enter your age" />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Height (in)</FormLabel>

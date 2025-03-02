@@ -105,10 +105,55 @@ function calculateMealCalories(
     }
 }
 
+function calculateBMI(weight: number, height: number): number {
+    // weight in kg, height in cm
+    const heightInMeters = height / 100;
+    return weight / (heightInMeters * heightInMeters);
+}
 
+function isDessertItem(itemName: string, restaurantName: string): boolean {
+    const dessertKeywords = ['ice cream', 'icedream', 'sundae', 'cookie', 'brownie', 'cake', 'pie', 'shake', 'dessert'];
+    const lowercaseItem = itemName.toLowerCase();
+    
+    // Restaurant-specific dessert items
+    if (restaurantName.toLowerCase().includes('chick-fil-a')) {
+        return lowercaseItem.includes('icedream') || 
+               lowercaseItem.includes('milkshake') ||
+               lowercaseItem.includes('frosted') ||
+               lowercaseItem.includes('cookie');
+    }
+    
+    if (restaurantName.toLowerCase().includes('wawa')) {
+        return lowercaseItem.includes('cookie') ||
+               lowercaseItem.includes('muffin') ||
+               lowercaseItem.includes('donut') ||
+               lowercaseItem.includes('pastry') ||
+               lowercaseItem.includes('brownie');
+    }
+    
+    // Generic dessert check
+    return dessertKeywords.some(keyword => lowercaseItem.includes(keyword));
+}
+
+function shouldRecommendDesserts(age: number, bmi: number): boolean {
+    // Don't recommend desserts for people over 30 or with high BMI
+    if (age > 30) {
+        return false;
+    }
+    
+    // BMI categories
+    // Underweight: < 18.5
+    // Normal: 18.5 - 24.9
+    // Overweight: 25 - 29.9
+    // Obese: >= 30
+    return bmi < 25; // Only recommend desserts for normal/underweight BMI
+}
 
 export {
     calculateMaintenanceCalories,
     calculateTargetMacros,
-    calculateMealCalories
+    calculateMealCalories,
+    calculateBMI,
+    isDessertItem,
+    shouldRecommendDesserts
 };

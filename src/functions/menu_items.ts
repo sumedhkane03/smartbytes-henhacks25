@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { calculateBMI, isDessertItem, shouldRecommendDesserts } from './calories';
 
 const NUTRITIONIX_APP_ID = "dc0fb789"; // Free tier credentials
 const NUTRITIONIX_API_KEY = "0a27a9677acb1c0ce093977f5bdd4a84";
@@ -289,10 +290,41 @@ async function displayMenuSortedByPreference(restaurantName: string) {
     const menuItems = await searchChainRestaurantItems(restaurantName);
     const userSortPreference = await getUserSortPreference();
     
-    // Filter out sauce items first
-    const filteredItems = menuItems.filter(
-      (item: any) => !item.food_name.toLowerCase().includes("sauce")
-    );
+    // Get user data for BMI calculation
+    const auth = getAuth();
+    const user = auth.currentUser;
+    let shouldFilterDesserts = false;
+    
+    if (user?.email) {
+      const db = getFirestore();
+      const userRef = doc(db, 'users', user.email);
+      const userDoc = await getDoc(userRef);
+      
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        const age = parseInt(userData.age) || 0;
+        const heightInCm = parseFloat(userData.height) * 2.54; // Convert inches to cm
+        const weightInKg = parseFloat(userData.weight) * 0.453592; // Convert lbs to kg
+        
+        if (age && heightInCm && weightInKg) {
+          const bmi = calculateBMI(weightInKg, heightInCm);
+          shouldFilterDesserts = !shouldRecommendDesserts(age, bmi);
+        }
+      }
+    }
+    
+    // Filter out sauce items and desserts if necessary
+    const filteredItems = menuItems.filter((item: any) => {
+      const isNotSauce = !item.food_name.toLowerCase().includes("sauce");
+      if (!isNotSauce) return false;
+      
+      // Filter out desserts for users over 30 or with high BMI
+      if (shouldFilterDesserts && isDessertItem(item.food_name, restaurantName)) {
+        return false;
+      }
+      
+      return true;
+    });
     
     // Map to a consistent structure with nutrition data
     const formattedItems = filteredItems.map((item: any) => ({
