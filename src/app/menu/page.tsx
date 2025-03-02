@@ -3,7 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import MenuItem from "@/src/components/MenuItem";
-import { getDetailedMenuItems } from "@/src/functions/menu_items";
+import { displayMenuSortedByPreference, getUserSortPreference } from "@/src/functions/menu_items";
+import { getAuth } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 import "./page.css";
 import BottomNav from "@/src/components/BottomNav";
 
@@ -41,6 +43,7 @@ export default function RestaurantMenu() {
   const [menuItems, setMenuItems] = useState<MenuItemType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [sortPreference, setSortPreference] = useState<string>(""); // Will display to the user what sort is being used
 
   useEffect(() => {
     async function fetchMenuItems() {
@@ -52,14 +55,44 @@ export default function RestaurantMenu() {
 
       try {
         setLoading(true);
-        const items = await getDetailedMenuItems(restaurantName);
-
-        // Filter out items with "sauce" in their name
-        const filteredItems: MenuItemType[] = items.filter(
-          (item: MenuItemType) => !item.name.toLowerCase().includes("sauce")
-        );
-
-        setMenuItems(filteredItems);
+        
+        // Get user's sort preference to display in the UI
+        const userPref = await getUserSortPreference();
+        const auth = getAuth();
+        const user = auth.currentUser;
+        let sortLabel = "";
+        
+        if (user?.email) {
+          const db = getFirestore();
+          const userRef = doc(db, 'users', user.email);
+          const userDoc = await getDoc(userRef);
+          
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            // Set sort label based on user's fitness goal
+            switch(userData.fitnessGoal) {
+              case 'build-muscle':
+                sortLabel = "Best for Muscle Gain (High Protein & Calories)";
+                break;
+              case 'lose-weight':
+                sortLabel = "Best for Weight Loss (Lowest Calories)";
+                break;
+              case 'maintain':
+                sortLabel = "Best for Maintenance (Highest Protein)";
+                break;
+              default:
+                sortLabel = "Recommended Items";
+            }
+          }
+        } else {
+          sortLabel = "Recommended Items";
+        }
+        
+        setSortPreference(sortLabel);
+        
+        // Get automatically sorted menu items based on user preferences
+        const sortedItems = await displayMenuSortedByPreference(restaurantName);
+        setMenuItems(sortedItems);
         setLoading(false);
       } catch (err) {
         console.error("Failed to fetch menu items:", err);
@@ -80,7 +113,7 @@ export default function RestaurantMenu() {
       formattedRestaurant === "Chick-fil-A" ||
       formattedRestaurant === "Wawa"
     ) {
-      return `/images/${formattedRestaurant}/${formattedItem}.png`; // ✅ Uses restaurant-specific image
+      return `/images/${formattedRestaurant}/${formattedItem}.png`; // Uses restaurant-specific image
     }
 
     // Default fallback logic
@@ -122,24 +155,24 @@ export default function RestaurantMenu() {
             No menu items found for this restaurant.
           </div>
         ) : (
-          menuItems
-            .slice(0, 10)
-            .map((item, index) => (
-              <MenuItem
-                key={index}
-                name={item.name}
-                calories={`${Math.round(item.nutrition.calories)} cal`}
-                image={getItemImage(item.name, restaurantName)}
-              />
-            ))
+          menuItems.map((item, index) => (
+            <MenuItem
+              key={index}
+              name={item.name}
+              calories={`${Math.round(item.nutrition.calories)} cal`}
+              protein={Math.round(item.nutrition.protein)}
+              image={getItemImage(item.name, restaurantName)}
+            />
+          ))
         )}
       </section>
 
-      {/* Sort By */}
-      <div className="sort-by">
-        <span>Sort by</span>
-        <span className="arrow">→</span>
-      </div>
+      {/* Sort By Info */}
+      {!loading && !error && menuItems.length > 0 && (
+        <div className="sort-by">
+          <span>Sorted by: {sortPreference}</span>
+        </div>
+      )}
 
       {/* Bottom Navigation */}
       <BottomNav />

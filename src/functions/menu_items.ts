@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 const NUTRITIONIX_APP_ID = "dc0fb789"; // Free tier credentials
 const NUTRITIONIX_API_KEY = "0a27a9677acb1c0ce093977f5bdd4a84";
@@ -239,53 +240,99 @@ async function getDetailedMenuItems(restaurantName: string) {
 
 export type SortOption = 'calories_asc' | 'calories_desc' | 'protein_asc' | 'protein_desc' | 'protein_ratio_desc';
 
-async function getUserSortPreference(userId: string): Promise<SortOption> {
-  const db = getFirestore();
-  const userRef = doc(db, 'users', userId);
-  const userDoc = await getDoc(userRef);
-
-  if (userDoc.exists()) {
-    const userData = userDoc.data();
-    const fitnessGoal = userData.fitnessGoal;
-    const activityLevel = parseInt(userData.activityLevel) || 1;
-
-    // Determine sort preference based on fitness goal and activity level
-    switch (fitnessGoal) {
-      case 'build-muscle':
-        return activityLevel >= 2 ? 'protein_ratio_desc' : 'protein_desc';
-      case 'lose-weight':
-        return 'calories_asc';
-      case 'maintain':
-        return activityLevel >= 2 ? 'protein_desc' : 'calories_asc';
-      default:
-        return userData.sortPreference as SortOption || 'calories_asc';
+/**
+ * Determines user sort preference based on their fitness goal
+ */
+async function getUserSortPreference(): Promise<SortOption> {
+  try {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    
+    if (!user?.email) {
+      return 'calories_asc'; // Default sort if no user is logged in
     }
-  }
+    
+    const db = getFirestore();
+    const userRef = doc(db, 'users', user.email);
+    const userDoc = await getDoc(userRef);
 
-  return 'calories_asc'; // Default sort option
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      const fitnessGoal = userData.fitnessGoal;
+
+      // New sorting logic based on fitness goal
+      switch (fitnessGoal) {
+        case 'build-muscle':
+          return 'protein_ratio_desc'; // Sort by highest protein-to-calorie ratio
+        case 'lose-weight':
+          return 'calories_asc'; // Sort by lowest calories
+        case 'maintain':
+          return 'protein_desc'; // Sort by highest protein
+        default:
+          return 'calories_asc'; // Default to lowest calories
+      }
+    }
+
+    return 'calories_asc'; // Default sort option
+  } catch (error) {
+    console.error("Error getting user sort preference:", error);
+    return 'calories_asc'; // Default in case of error
+  }
 }
 
-async function displayMenuSortedByPreference(restaurantName: string, userId: string) {
+/**
+ * Gets menu items for a specific restaurant sorted by user preferences
+ */
+async function displayMenuSortedByPreference(restaurantName: string) {
   try {
+    // Get the raw menu items directly from the API to ensure we have all original data
     const menuItems = await searchChainRestaurantItems(restaurantName);
-    const userSortPreference = await getUserSortPreference(userId);
+    const userSortPreference = await getUserSortPreference();
+    
+    // Filter out sauce items first
+    const filteredItems = menuItems.filter(
+      (item: any) => !item.food_name.toLowerCase().includes("sauce")
+    );
+    
+    // Map to a consistent structure with nutrition data
+    const formattedItems = filteredItems.map((item: any) => ({
+      name: item.food_name,
+      brandName: item.brand_name,
+      servingSize: item.serving_qty,
+      servingUnit: item.serving_unit,
+      nutrition: {
+        calories: item.nf_calories || 0,
+        totalFat: item.nf_total_fat || 0,
+        saturatedFat: item.nf_saturated_fat || 0,
+        cholesterol: item.nf_cholesterol || 0,
+        sodium: item.nf_sodium || 0,
+        totalCarbs: item.nf_total_carbohydrate || 0,
+        dietaryFiber: item.nf_dietary_fiber || 0,
+        sugars: item.nf_sugars || 0,
+        protein: item.nf_protein || 0,
+        potassium: item.nf_potassium || 0,
+        calcium: item.nf_calcium_dv || 0,
+        iron: item.nf_iron_dv || 0,
+      },
+    }));
 
-    return menuItems.sort((a: any, b: any) => {
+    // Sort the formatted items based on user preference and fitness goal
+    return formattedItems.sort((a: any, b: any) => {
       switch (userSortPreference) {
         case 'calories_asc':
-          return (a.nf_calories || 0) - (b.nf_calories || 0);
+          return a.nutrition.calories - b.nutrition.calories;
         case 'calories_desc':
-          return (b.nf_calories || 0) - (a.nf_calories || 0);
-        case 'protein_asc':
-          return (a.nf_protein || 0) - (b.nf_protein || 0);
+          return b.nutrition.calories - a.nutrition.calories;
         case 'protein_desc':
-          return (b.nf_protein || 0) - (a.nf_protein || 0);
+          return b.nutrition.protein - a.nutrition.protein;
         case 'protein_ratio_desc':
-          const aRatio = (a.nf_protein || 0) / (a.nf_calories || 1);
-          const bRatio = (b.nf_protein || 0) / (b.nf_calories || 1);
-          return bRatio - aRatio;
+          // For muscle building, prioritize items with both high protein and calories
+          // Calculate a score that considers both protein content and calories
+          const aScore = (a.nutrition.protein * 4) + (a.nutrition.calories * 0.1);
+          const bScore = (b.nutrition.protein * 4) + (b.nutrition.calories * 0.1);
+          return bScore - aScore;
         default:
-          return (a.nf_calories || 0) - (b.nf_calories || 0);
+          return a.nutrition.calories - b.nutrition.calories;
       }
     });
   } catch (error) {
@@ -302,5 +349,6 @@ export {
   getRestaurantMenuItems,
   getRestaurantMenuItemsSorted,
   getDetailedMenuItems,
-  displayMenuSortedByPreference
+  displayMenuSortedByPreference,
+  getUserSortPreference
 };

@@ -36,7 +36,7 @@ export default function MenuItem({ name, calories, protein, image }: MenuItemPro
       <div className="item-info">
         <h3 className="item-name">{name}</h3>
         <p className="item-calories">{calories}</p>
-        {protein && <p className="item-protein">{protein}g protein</p>}
+        {/* {protein && <p className="item-protein">{protein}g protein</p>} */}
         <div className="button-row">
           <button className="buy-button" onClick={handleBuyClick}>
             Buy
