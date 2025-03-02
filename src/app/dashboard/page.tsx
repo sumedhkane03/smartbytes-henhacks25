@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Card from "../../components/card";
 import { searchNearbyRestaurants } from "@/src/functions/menu_items";
 import "./page.css";
+import defaultImage from "@/public/images/Default.png";
 
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -173,7 +174,7 @@ export default function DashboardPage() {
                   backgroundImage={
                     restaurant.photo
                       ? restaurant.photo
-                      : "https://placehold.co/600x150"
+                      : defaultImage
                   }
                   logoImage={logoPath} // ✅ Dynamically set the logo
                   text={restaurant.name}
