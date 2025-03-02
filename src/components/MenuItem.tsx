@@ -6,10 +6,11 @@ import { useRouter } from "next/navigation";
 interface MenuItemProps {
   name: string;
   calories: string;
+  protein?: number;
   image: string | StaticImageData;
 }
 
-export default function MenuItem({ name, calories, image }: MenuItemProps) {
+export default function MenuItem({ name, calories, protein, image }: MenuItemProps) {
   const [liked, setLiked] = useState(false);
   const router = useRouter();
 
@@ -35,6 +36,7 @@ export default function MenuItem({ name, calories, image }: MenuItemProps) {
       <div className="item-info">
         <h3 className="item-name">{name}</h3>
         <p className="item-calories">{calories}</p>
+        {protein && <p className="item-protein">{protein}g protein</p>}
         <div className="button-row">
           <button className="buy-button" onClick={handleBuyClick}>
             Buy
