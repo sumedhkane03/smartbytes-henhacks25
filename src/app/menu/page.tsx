@@ -6,6 +6,7 @@ import MenuItem from "@/src/components/MenuItem";
 import { displayMenuSortedByPreference, getUserSortPreference } from "@/src/functions/menu_items";
 import { getAuth } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { calculateBMI, shouldRecommendDesserts } from "@/src/functions/calories";
 import "./page.css";
 import BottomNav from "@/src/components/BottomNav";
 
@@ -44,6 +45,8 @@ export default function RestaurantMenu() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [sortPreference, setSortPreference] = useState<string>(""); // Will display to the user what sort is being used
+  const [dessertFiltered, setDessertFiltered] = useState<boolean>(false);
+  const [filterReason, setFilterReason] = useState<string>("");
 
   useEffect(() => {
     async function fetchMenuItems() {
@@ -56,20 +59,46 @@ export default function RestaurantMenu() {
       try {
         setLoading(true);
         
-        // Get user's sort preference to display in the UI
-        const userPref = await getUserSortPreference();
+        // Get user data for filter explanation
         const auth = getAuth();
         const user = auth.currentUser;
-        let sortLabel = "";
+        const db = getFirestore();
         
         if (user?.email) {
-          const db = getFirestore();
           const userRef = doc(db, 'users', user.email);
           const userDoc = await getDoc(userRef);
           
           if (userDoc.exists()) {
             const userData = userDoc.data();
-            // Set sort label based on user's fitness goal
+            const age = parseInt(userData.age) || 0;
+            const heightInCm = parseFloat(userData.height) * 2.54;
+            const weightInKg = parseFloat(userData.weight) * 0.453592;
+            
+            if (age && heightInCm && weightInKg) {
+              const bmi = calculateBMI(weightInKg, heightInCm);
+              const shouldFilter = !shouldRecommendDesserts(age, bmi);
+              setDessertFiltered(shouldFilter);
+              
+              if (shouldFilter) {
+                if (age > 30) {
+                  setFilterReason("Age-optimized menu (some desserts filtered)");
+                } else if (bmi >= 25) {
+                  setFilterReason("Health-optimized menu (some desserts filtered)");
+                }
+              }
+            }
+          }
+        }
+        
+        // Get user's sort preference to display in the UI
+        const userPref = await getUserSortPreference();
+        let sortLabel = "";
+        
+        if (user?.email) {
+          const userDoc = await getDoc(doc(db, 'users', user.email));
+          
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
             switch(userData.fitnessGoal) {
               case 'build-muscle':
                 sortLabel = "Best for Muscle Gain (High Protein & Calories)";
@@ -90,7 +119,6 @@ export default function RestaurantMenu() {
         
         setSortPreference(sortLabel);
         
-        // Get automatically sorted menu items based on user preferences
         const sortedItems = await displayMenuSortedByPreference(restaurantName);
         setMenuItems(sortedItems);
         setLoading(false);
@@ -145,6 +173,20 @@ export default function RestaurantMenu() {
 
       <section className="recommended-section">
         <h2 className="recommended-title">Menu Items</h2>
+        
+        {/* Show sorting and filtering info */}
+        {!loading && !error && menuItems.length > 0 && (
+          <div className="menu-info">
+            <div className="sort-by">
+              <span>{sortPreference}</span>
+            </div>
+            {dessertFiltered && (
+              <div className="filter-info">
+                <span>{filterReason}</span>
+              </div>
+            )}
+          </div>
+        )}
 
         {loading ? (
           <div className="loading">Loading menu items...</div>
@@ -167,14 +209,6 @@ export default function RestaurantMenu() {
         )}
       </section>
 
-      {/* Sort By Info */}
-      {!loading && !error && menuItems.length > 0 && (
-        <div className="sort-by">
-          <span>Sorted by: {sortPreference}</span>
-        </div>
-      )}
-
-      {/* Bottom Navigation */}
       <BottomNav />
     </div>
   );

@@ -9,8 +9,10 @@ import defaultImage from "@/public/images/Default.png";
 import BottomNav from "@/src/components/BottomNav";
 
 // Default location (fallback)
-const defaultLat = 38.984783;
-const defaultLng = -77.113892;
+// const defaultLat = 38.984783;
+// const defaultLng = -77.113892;
+const defaultLat = 39.6787712;
+const defaultLng = -75.7465088;
 
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");

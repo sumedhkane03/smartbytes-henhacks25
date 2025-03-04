@@ -96,8 +96,9 @@
   align-items: center;
   margin-top: 20px;
   margin-bottom: 20px;
-  font-size: 16px;
-  color: #333;
+  font-size: 15px;
+  color: #2d3748;
+  margin-bottom: 6px;
 }
 
 .arrow {
@@ -130,4 +131,25 @@
 .active-nav-item {
   color: #000;
   font-weight: bold;
+}
+
+.menu-info {
+  margin: 10px 0 20px;
+  padding: 12px 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #6b8f80;
+}
+
+.filter-info {
+  font-size: 14px;
+  color: #718096;
+  padding-top: 4px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.filter-info span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
